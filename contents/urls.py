@@ -27,5 +27,5 @@ urlpatterns = [
     path('get_contacts/<int:pk>', ContactInfoViewSet.as_view({'get': 'retrieve'})),
     path('list_contacts', ContactInfoViewSet.as_view({'get': 'list'})),
     # complier urls
-    path('create_compiler', CompilerViewSet.as_view({'post': 'create'})),
+    path('create_compiler', CompilerViewSet.as_view({'post': 'post'})),
 ]

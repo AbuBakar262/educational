@@ -1,5 +1,6 @@
+import os
 import traceback
-
+import requests
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -153,22 +154,42 @@ class ContactInfoViewSet(ModelViewSet):
 
 class CompilerViewSet(ModelViewSet):
     serializer_class = CompilerSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
-    def create(self, request):
-        serializer = CompilerSerializer(data=request.data)
-        my_code = request.data.get('my_code')
-        if serializer.is_valid():
-            try:
-                output = {}
-                python_code = """
-                def my_func():
-                    print("My name is " + my_code)
-                my_func()
-                """
-                exec(python_code)
-                return Response(output, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({"error": str(e), "traceback": traceback.format_exc()},
-                                status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        try:
+            serializer = CompilerSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response({
+                    "success": False,
+                    "message": serializer.errors,
+                    "data": []
+                }, status=status.HTTP_400_BAD_REQUEST)
+            my_code = serializer.validated_data.get("my_code")
+            url = os.getenv("COMPILER_URL")
+            payload = {
+                "language": os.getenv("COMPILER_LANGUAGE"),
+                "version": "latest",
+                "code": my_code,
+                "input": None
+            }
+            headers = {
+                "content-type": "application/json",
+                "X-RapidAPI-Key": os.getenv("RAPID_COMPILER_API_KEY"),
+                "X-RapidAPI-Host": os.getenv("RAPID_COMPILER_API_HOST")
+            }
+            response = requests.post(url, json=payload, headers=headers)
+            output = response.json().get("output").replace("\n", "")
+            return Response({
+                "success": True,
+                "message": "Successfully compiled",
+                "data": output
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            traceback.print_exc()
+            return Response({
+                "success": False,
+                "message": str(e),
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
