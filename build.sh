@@ -3,9 +3,9 @@
 # Run makemigrations and migrate
 echo "Build Start"
 echo "Make migrations"
-python manage.py makemigrations --noinput
+python manage.py makemigrations
 echo "Migrating"
-python manage.py migrate --noinput
+python manage.py migrate
 echo "Build End"
 
 # Build the frontend (replace this with your actual frontend build command)
