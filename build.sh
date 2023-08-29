@@ -2,7 +2,7 @@
 
 # Run makemigrations and migrate
 echo "Build Start"
-eche "Make migrations"
+echo "Make migrations"
 python manage.py makemigrations --noinput
 echo "Migrating"
 python manage.py migrate --noinput
