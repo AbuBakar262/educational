@@ -2,19 +2,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "educational/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.10" }
-    },
-    {
       "src": "build.sh",
-      "use": "@vercel/static-build"
+      "use": "@vercel/python"
     }
   ],
-  "routes": [
-    {
-      "src": "/.*",
-      "dest": "educational/wsgi.py"
-    }
-  ]
+  "framework": "django"
 }
