@@ -12,7 +12,9 @@
     }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "educational/wsgi.py" }
+    {
+      "src": "/.*",
+      "dest": "educational/wsgi.py"
+    }
   ]
 }
