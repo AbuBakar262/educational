@@ -1,11 +1,22 @@
 from rest_framework import serializers
-from .models import Part, Introduction, AboutUs, ContactInfo
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
 
 
-class ContentSerializer(serializers.ModelSerializer):
+class PartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Part
         fields = '__all__'
+
+
+class SubPartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubPart
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['part'] = PartSerializer(instance.part).data
+        return representation
 
 
 class IntroductionSerializer(serializers.ModelSerializer):

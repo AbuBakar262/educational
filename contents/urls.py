@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import (
-    IntroductionViewSet, ContentViewSet,
+    IntroductionViewSet, PartViewSet,
     AboutUsViewSet, ContactInfoViewSet,
-    CompilerViewSet,
+    CompilerViewSet, SubPartViewSet
 )
 
 urlpatterns = [
@@ -11,11 +11,16 @@ urlpatterns = [
     path('update_intro/<int:pk>', IntroductionViewSet.as_view({'put': 'update'})),
     path('get_intro/<int:pk>', IntroductionViewSet.as_view({'get': 'retrieve'})),
     path('list_intro', IntroductionViewSet.as_view({'get': 'list'})),
-    # content urls
-    path('create_content', ContentViewSet.as_view({'post': 'create'})),
-    path('update_content/<int:pk>', ContentViewSet.as_view({'put': 'update'})),
-    path('get_content/<int:pk>', ContentViewSet.as_view({'get': 'retrieve'})),
-    path('list_content', ContentViewSet.as_view({'get': 'list'})),
+    # part urls
+    path('create_part', PartViewSet.as_view({'post': 'create'})),
+    path('update_part/<int:pk>', PartViewSet.as_view({'put': 'update'})),
+    path('get_part/<int:pk>', PartViewSet.as_view({'get': 'retrieve'})),
+    path('list_part', PartViewSet.as_view({'get': 'list'})),
+    # sub part urls
+    path('create_sub_part', SubPartViewSet.as_view({'post': 'create'})),
+    path('update_sub_part/<int:pk>', SubPartViewSet.as_view({'put': 'update'})),
+    path('get_sub_part/<int:pk>', SubPartViewSet.as_view({'get': 'retrieve'})),
+    path('list_sub_part', SubPartViewSet.as_view({'get': 'list'})),
     # about us urls
     path('create_about', AboutUsViewSet.as_view({'post': 'create'})),
     path('update_about/<int:pk>', AboutUsViewSet.as_view({'put': 'update'})),

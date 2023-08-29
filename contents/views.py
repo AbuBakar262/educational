@@ -6,16 +6,16 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
 from .serializers import (
-    ContentSerializer, IntroductionSerializer,
+    PartSerializer, IntroductionSerializer,
     AboutUsSerializer, ContactInfoSerializer,
-    CompilerSerializer
+    CompilerSerializer, SubPartSerializer
 )
 
 
 class IntroductionViewSet(ModelViewSet):
     queryset = Introduction.objects.all()
     serializer_class = IntroductionSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = IntroductionSerializer(data=request.data)
@@ -47,13 +47,13 @@ class IntroductionViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ContentViewSet(ModelViewSet):
+class PartViewSet(ModelViewSet):
     queryset = Part.objects.all()
-    serializer_class = ContentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PartSerializer
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = ContentSerializer(data=request.data)
+        serializer = PartSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -63,7 +63,7 @@ class ContentViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = ContentSerializer(instance, data=request.data)
+        serializer = PartSerializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -73,12 +73,47 @@ class ContentViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = ContentSerializer(instance)
+        serializer = PartSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         queryset = Part.objects.all()
-        serializer = ContentSerializer(queryset, many=True)
+        serializer = PartSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SubPartViewSet(ModelViewSet):
+    queryset = SubPart.objects.all()
+    serializer_class = SubPartSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = SubPartSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = SubPartSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = SubPartSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def list(self, request, *args, **kwargs):
+        queryset = SubPart.objects.all()
+        serializer = SubPartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
