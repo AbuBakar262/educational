@@ -4,7 +4,7 @@ import requests
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import Content, Introduction, AboutUs, ContactInfo
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
 from .serializers import (
     ContentSerializer, IntroductionSerializer,
     AboutUsSerializer, ContactInfoSerializer,
@@ -48,7 +48,7 @@ class IntroductionViewSet(ModelViewSet):
 
 
 class ContentViewSet(ModelViewSet):
-    queryset = Content.objects.all()
+    queryset = Part.objects.all()
     serializer_class = ContentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -77,7 +77,7 @@ class ContentViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = Content.objects.all()
+        queryset = Part.objects.all()
         serializer = ContentSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

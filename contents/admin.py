@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Content, Introduction, AboutUs, ContactInfo
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
 
 # Register your models here.
-admin.site.register(Content)
+admin.site.register(Part)
+admin.site.register(SubPart)
 admin.site.register(Introduction)
 admin.site.register(AboutUs)
 admin.site.register(ContactInfo)

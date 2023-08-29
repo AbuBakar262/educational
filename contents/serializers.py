@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Content, Introduction, AboutUs, ContactInfo
+from .models import Part, Introduction, AboutUs, ContactInfo
 
 
 class ContentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Content
+        model = Part
         fields = '__all__'
 
 
