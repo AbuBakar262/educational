@@ -116,6 +116,12 @@ class SubPartViewSet(ModelViewSet):
         serializer = SubPartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def get_by_part(self, request, *args, **kwargs):
+        part_id = self.request.query_params.get("part_id")
+        sub_parts = SubPart.objects.filter(part_id=part_id)
+        serializer = SubPartSerializer(sub_parts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AboutUsViewSet(ModelViewSet):
     queryset = AboutUs.objects.all()

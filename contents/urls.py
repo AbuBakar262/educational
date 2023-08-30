@@ -21,6 +21,7 @@ urlpatterns = [
     path('update_sub_part/<int:pk>', SubPartViewSet.as_view({'put': 'update'})),
     path('get_sub_part/<int:pk>', SubPartViewSet.as_view({'get': 'retrieve'})),
     path('list_sub_part', SubPartViewSet.as_view({'get': 'list'})),
+    path('get_by_part_id', SubPartViewSet.as_view({'get': 'get_by_part'})),
     # about us urls
     path('create_about', AboutUsViewSet.as_view({'post': 'create'})),
     path('update_about/<int:pk>', AboutUsViewSet.as_view({'put': 'update'})),
