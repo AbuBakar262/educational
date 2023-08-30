@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'django-insecure-y&ccd1(xvz0_b_@#qr225+z9#7tz&(wa&-3c%_k6jcs%2glh8d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv('DEBUG'))
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -135,12 +135,12 @@ SIMPLE_JWT = {
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv("DB_ENGINE"),
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'education',
+        'USER': 'edu_user',
+        'PASSWORD': 'edu_pass',
+        'HOST': 'education.cikkggdp9apb.us-west-2.rds.amazonaws.com',
+        'PORT': 1452
     }
 }
 
