@@ -140,7 +140,7 @@ DATABASES = {
         'USER': 'edu_user',
         'PASSWORD': 'edu_pass',
         'HOST': 'education.cikkggdp9apb.us-west-2.rds.amazonaws.com',
-        'PORT': 1452
+        'PORT': 5432
     }
 }
 
