@@ -15,7 +15,7 @@ from .serializers import (
 class IntroductionViewSet(ModelViewSet):
     queryset = Introduction.objects.all()
     serializer_class = IntroductionSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = IntroductionSerializer(data=request.data)
@@ -120,7 +120,7 @@ class SubPartViewSet(ModelViewSet):
 class AboutUsViewSet(ModelViewSet):
     queryset = AboutUs.objects.all()
     serializer_class = AboutUsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = AboutUsSerializer(data=request.data)
@@ -155,7 +155,7 @@ class AboutUsViewSet(ModelViewSet):
 class ContactInfoViewSet(ModelViewSet):
     queryset = ContactInfo.objects.all()
     serializer_class = ContactInfoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = ContactInfoSerializer(data=request.data)
