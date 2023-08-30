@@ -4,6 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from .models import User
 from .serializers import UserSerializer, LoginSerializer
+from django.contrib.auth.hashers import make_password
 
 
 class UserViewSet(ModelViewSet):
@@ -20,6 +21,8 @@ class UserViewSet(ModelViewSet):
                     "message": serializer.errors,
                     "data": []
                 }, status=status.HTTP_400_BAD_REQUEST)
+            password = serializer.validated_data['password']
+            serializer.validated_data['password'] = make_password(password)
             serializer.save()
             serializer.instance.is_superuser = True
             serializer.save()
