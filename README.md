@@ -56,8 +56,12 @@ Follow these steps to set up the Educational project locally:
    
    python manage.py makemigrations
    python manage.py migrate
+
+5. Collect Static Files for Admin Panel:
+   ```
+   python manage.py collectstatic
    
-5. Create .env File:
+6. Create .env File:
    ```
    create a file named as .env
    now just opy the below keys and write you own values of them withou any inverted commas
@@ -69,8 +73,7 @@ Follow these steps to set up the Educational project locally:
    DB_HOST=
    DB_PORT=
 
-
-6. Run Local Server
+7. Run Local Server
    ```
    python manage.py runserver
 
