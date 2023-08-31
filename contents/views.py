@@ -5,7 +5,7 @@ import requests
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode
 from .serializers import (
     PartSerializer, IntroductionSerializer,
     AboutUsSerializer, ContactInfoSerializer,
@@ -204,7 +204,7 @@ class CompilerViewSet(ModelViewSet):
     serializer_class = CompilerSerializer
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def execute_code(self, request):
         serializer = CompilerSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
@@ -212,12 +212,12 @@ class CompilerViewSet(ModelViewSet):
                 "message": serializer.errors,
                 "data": []
             }, status=status.HTTP_400_BAD_REQUEST)
-        my_code = serializer.validated_data.get("my_code")
+        my_code = PythonCode.objects.all()[0]
+        code = f"print('{my_code}')"
         original_stdout = sys.stdout
         sys.stdout = io.StringIO()
-
         try:
-            exec(my_code)
+            exec(code)
             output = sys.stdout.getvalue()
         except Exception as e:
             output = str(e)

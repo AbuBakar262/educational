@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Part, SubPart, Introduction, AboutUs, ContactInfo
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode
 
 
 class PartSerializer(serializers.ModelSerializer):
@@ -16,6 +16,7 @@ class SubPartSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['part'] = PartSerializer(instance.part).data
+        representation['my_code'] = PythonCode.objects.all()[0].my_code
         return representation
 
 
@@ -38,4 +39,6 @@ class ContactInfoSerializer(serializers.ModelSerializer):
 
 
 class CompilerSerializer(serializers.Serializer):
-    my_code = serializers.CharField(max_length=1000)
+    class Meta:
+        model = PythonCode
+        fields = '__all__'

@@ -44,3 +44,10 @@ class ContactInfo(models.Model):
     youtube = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class PythonCode(models.Model):
+    my_code = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.my_code
