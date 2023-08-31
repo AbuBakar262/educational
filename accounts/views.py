@@ -8,11 +8,13 @@ from django.contrib.auth.hashers import make_password
 
 
 class UserViewSet(ModelViewSet):
+    """This is User class which will manage User endpoints"""
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
 
     def create_user(self, request, *args, **kwargs):
+        """This endpoint used for creating admin users"""
         try:
             serializer = self.serializer_class(data=request.data)
             if not serializer.is_valid():
@@ -40,11 +42,13 @@ class UserViewSet(ModelViewSet):
 
 
 class UserLoginViewSet(ModelViewSet):
+    """This class is used for login endpoints"""
     serializer_class = LoginSerializer
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
 
     def login(self, request, *args, **kwargs):
+        """This is the endpoint used for login admin users"""
         try:
             serializer = self.serializer_class(data=request.data)
             if not serializer.is_valid():

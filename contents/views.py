@@ -1,4 +1,5 @@
-import os
+import io
+import sys
 import traceback
 import requests
 from rest_framework import status, permissions
@@ -13,6 +14,7 @@ from .serializers import (
 
 
 class IntroductionViewSet(ModelViewSet):
+    """This class is used for managing endpoints for introduction"""
     queryset = Introduction.objects.all()
     serializer_class = IntroductionSerializer
     permission_classes = [permissions.AllowAny]
@@ -48,6 +50,7 @@ class IntroductionViewSet(ModelViewSet):
 
 
 class PartViewSet(ModelViewSet):
+    """This class is used for managing endpoints for Part"""
     queryset = Part.objects.all()
     serializer_class = PartSerializer
     permission_classes = [permissions.AllowAny]
@@ -83,6 +86,7 @@ class PartViewSet(ModelViewSet):
 
 
 class SubPartViewSet(ModelViewSet):
+    """This class is used for managing endpoints for Sub Parts"""
     queryset = SubPart.objects.all()
     serializer_class = SubPartSerializer
     permission_classes = [permissions.AllowAny]
@@ -124,6 +128,7 @@ class SubPartViewSet(ModelViewSet):
 
 
 class AboutUsViewSet(ModelViewSet):
+    """This class is used for managing endpoints for About Us"""
     queryset = AboutUs.objects.all()
     serializer_class = AboutUsSerializer
     permission_classes = [permissions.AllowAny]
@@ -159,6 +164,7 @@ class AboutUsViewSet(ModelViewSet):
 
 
 class ContactInfoViewSet(ModelViewSet):
+    """This class is used for managing endpoints for Contact Info"""
     queryset = ContactInfo.objects.all()
     serializer_class = ContactInfoSerializer
     permission_classes = [permissions.AllowAny]
@@ -194,43 +200,28 @@ class ContactInfoViewSet(ModelViewSet):
 
 
 class CompilerViewSet(ModelViewSet):
+    """This class is used for managing endpoints for Python compiler"""
     serializer_class = CompilerSerializer
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        try:
-            serializer = CompilerSerializer(data=request.data)
-            if not serializer.is_valid():
-                return Response({
-                    "success": False,
-                    "message": serializer.errors,
-                    "data": []
-                }, status=status.HTTP_400_BAD_REQUEST)
-            my_code = serializer.validated_data.get("my_code")
-            url = os.getenv("COMPILER_URL")
-            payload = {
-                "language": os.getenv("COMPILER_LANGUAGE"),
-                "version": "latest",
-                "code": my_code,
-                "input": None
-            }
-            headers = {
-                "content-type": "application/json",
-                "X-RapidAPI-Key": os.getenv("RAPID_COMPILER_API_KEY"),
-                "X-RapidAPI-Host": os.getenv("RAPID_COMPILER_API_HOST")
-            }
-            response = requests.post(url, json=payload, headers=headers)
-            output = response.json().get("output").replace("\n", "")
-            return Response({
-                "success": True,
-                "message": "Successfully compiled",
-                "data": output
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            traceback.print_exc()
+        serializer = CompilerSerializer(data=request.data)
+        if not serializer.is_valid():
             return Response({
                 "success": False,
-                "message": str(e),
+                "message": serializer.errors,
                 "data": []
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        my_code = serializer.validated_data.get("my_code")
+        original_stdout = sys.stdout
+        sys.stdout = io.StringIO()
 
+        try:
+            exec(my_code)
+            output = sys.stdout.getvalue()
+        except Exception as e:
+            output = str(e)
+        finally:
+            sys.stdout = original_stdout
+
+        return Response({'output': output.replace("\n", "")}, status=status.HTTP_200_OK)

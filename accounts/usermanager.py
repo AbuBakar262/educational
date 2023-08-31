@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
+    """User manager class that is used for giving permissions and creating admins"""
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
