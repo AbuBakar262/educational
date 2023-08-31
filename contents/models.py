@@ -20,7 +20,7 @@ class SubPart(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.part} - {self.title}"
+        return f"{self.title} - {self.part}"
 
 
 # this  holds the information of introduction
