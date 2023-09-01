@@ -38,7 +38,7 @@ class ContactInfoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CompilerSerializer(serializers.Serializer):
+class CompilerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PythonCode
         fields = '__all__'

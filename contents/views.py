@@ -201,18 +201,18 @@ class ContactInfoViewSet(ModelViewSet):
 
 class CompilerViewSet(ModelViewSet):
     """This class is used for managing endpoints for Python compiler"""
+    queryset = PythonCode.objects.all()
     serializer_class = CompilerSerializer
     permission_classes = [permissions.AllowAny]
 
-    def execute_code(self, request):
-        serializer = CompilerSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response({
-                "success": False,
-                "message": serializer.errors,
-                "data": []
-            }, status=status.HTTP_400_BAD_REQUEST)
-        my_code = PythonCode.objects.all()[0]
+    def list(self, request, *args, **kwargs):
+        queryset = PythonCode.objects.all()
+        serializer = CompilerSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def execute_code(self, request, *args, **kwargs):
+        instance = self.get_object()
+        my_code = instance.my_code
         code = f"print('{my_code}')"
         original_stdout = sys.stdout
         sys.stdout = io.StringIO()

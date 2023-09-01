@@ -139,10 +139,10 @@ SIMPLE_JWT = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'education',
-        'USER': 'edu_user',
-        'PASSWORD': 'edu_pass',
-        'HOST': 'education.cikkggdp9apb.us-west-2.rds.amazonaws.com',
+        'NAME': 'abubkr',
+        'USER': 'abubkr',
+        'PASSWORD': 'abubkr991',
+        'HOST': 'abubkr.cikkggdp9apb.us-west-2.rds.amazonaws.com',
         'PORT': 5432
     }
 }
