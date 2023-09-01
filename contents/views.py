@@ -44,7 +44,7 @@ class IntroductionViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = Introduction.objects.all()
+        queryset = Introduction.objects.all().order_by('id')
         serializer = IntroductionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -80,7 +80,7 @@ class PartViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = Part.objects.all()
+        queryset = Part.objects.all().order_by('id')
         serializer = PartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -116,7 +116,7 @@ class SubPartViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = SubPart.objects.all()
+        queryset = SubPart.objects.all().order_by('id')
         serializer = SubPartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -158,7 +158,7 @@ class AboutUsViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = AboutUs.objects.all()
+        queryset = AboutUs.objects.all().order_by('id')
         serializer = AboutUsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -194,7 +194,7 @@ class ContactInfoViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        queryset = ContactInfo.objects.all()
+        queryset = ContactInfo.objects.all().order_by('id')
         serializer = ContactInfoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -206,7 +206,7 @@ class CompilerViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def list(self, request, *args, **kwargs):
-        queryset = PythonCode.objects.all()
+        queryset = PythonCode.objects.all().order_by('id')
         serializer = CompilerSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
