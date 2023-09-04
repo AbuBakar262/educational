@@ -16,7 +16,17 @@ class SubPartSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['part'] = PartSerializer(instance.part).data
-        representation['my_code'] = PythonCode.objects.all()[0].my_code
+        code_obj = PythonCode.objects.filter(sub_part=instance.id).all().order_by("id")
+        new_code_list = []
+        for code in code_obj:
+            code_data = CompilerSerializer(code).data
+            if ',' in code_data['my_code']:
+                my_code = code_data['my_code'].split(',')
+                code_data["my_code"] = my_code
+            new_code_list.append(code_data)
+        total_count = len(new_code_list)
+        representation["my_code"] = new_code_list
+        representation["total_my_code"] = total_count
         return representation
 
 

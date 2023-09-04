@@ -15,7 +15,6 @@ class Part(models.Model):
 class SubPart(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    part = models.ForeignKey(Part, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -47,7 +46,8 @@ class ContactInfo(models.Model):
 
 
 class PythonCode(models.Model):
-    my_code = models.CharField(max_length=50)
+    my_code = models.TextField()
+    sub_part = models.ForeignKey(SubPart, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.my_code

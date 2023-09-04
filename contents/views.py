@@ -1,7 +1,9 @@
 import io
 import sys
-import traceback
-import requests
+import pandas as pd
+import matplotlib
+import geopandas as gpd
+import shapely.geometry
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -213,11 +215,28 @@ class CompilerViewSet(ModelViewSet):
     def execute_code(self, request, *args, **kwargs):
         instance = self.get_object()
         my_code = instance.my_code
-        code = f"print('{my_code}')"
+        if "," in my_code:
+            list_code = my_code.split(",")
+            output_list = []
+            for code in list_code:
+                original_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                try:
+                    exec(code)
+                    output = sys.stdout.getvalue()
+                except Exception as e:
+                    output = str(e)
+                finally:
+                    sys.stdout = original_stdout
+                output_list.append(output)
+            list_code.clear()
+            for o in output_list:
+                list_code.append(o.replace("\n", ""))
+            return Response({'output': list_code}, status=status.HTTP_200_OK)
         original_stdout = sys.stdout
         sys.stdout = io.StringIO()
         try:
-            exec(code)
+            exec(my_code)
             output = sys.stdout.getvalue()
         except Exception as e:
             output = str(e)
