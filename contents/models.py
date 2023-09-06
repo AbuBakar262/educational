@@ -15,6 +15,8 @@ class Part(models.Model):
 class SubPart(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
+    description = models.TextField()
+    count = models.CharField(max_length=10, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

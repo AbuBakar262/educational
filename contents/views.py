@@ -22,6 +22,9 @@ class IntroductionViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create introduction
+        """
         serializer = IntroductionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -31,6 +34,9 @@ class IntroductionViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update introduction
+        """
         instance = self.get_object()
         serializer = IntroductionSerializer(instance, data=request.data)
         if serializer.is_valid():
@@ -41,11 +47,17 @@ class IntroductionViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get single introduction by id
+        """
         instance = self.get_object()
         serializer = IntroductionSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list all created introduction object
+        """
         queryset = Introduction.objects.all().order_by('id')
         serializer = IntroductionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -58,6 +70,9 @@ class PartViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create parts
+        """
         serializer = PartSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -67,6 +82,9 @@ class PartViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update parts by id
+        """
         instance = self.get_object()
         serializer = PartSerializer(instance, data=request.data)
         if serializer.is_valid():
@@ -77,11 +95,17 @@ class PartViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get part by id
+        """
         instance = self.get_object()
         serializer = PartSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list all created parts
+        """
         queryset = Part.objects.all().order_by('id')
         serializer = PartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -94,15 +118,27 @@ class SubPartViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create sub-parts having part in it
+        """
         serializer = SubPartSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            part_id = serializer.validated_data.get("part").id
+            # handling count for sub_parts
+            count = 1
+            while SubPart.objects.filter(part_id=part_id, count=f"{part_id}.{count}").exists():
+                count += 1
+            completed_count = f"{part_id}.{count}"
+            serializer.save(count=completed_count)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update sub-parts by id
+        """
         instance = self.get_object()
         serializer = SubPartSerializer(instance, data=request.data)
         if serializer.is_valid():
@@ -113,16 +149,26 @@ class SubPartViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get single sub-part by id
+        """
         instance = self.get_object()
         serializer = SubPartSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list all the sub-parts
+        """
         queryset = SubPart.objects.all().order_by('id')
         serializer = SubPartSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_by_part(self, request, *args, **kwargs):
+        """
+            this endpoint will list all the sub-parts of 1 part by giving part_id
+            in the query params
+        """
         part_id = self.request.query_params.get("part_id")
         sub_parts = SubPart.objects.filter(part_id=part_id)
         serializer = SubPartSerializer(sub_parts, many=True)
@@ -136,6 +182,9 @@ class AboutUsViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create about us page content
+        """
         serializer = AboutUsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -145,6 +194,9 @@ class AboutUsViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update about us page content
+        """
         instance = self.get_object()
         serializer = AboutUsSerializer(instance, data=request.data)
         if serializer.is_valid():
@@ -155,11 +207,17 @@ class AboutUsViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get single about us page
+        """
         instance = self.get_object()
         serializer = AboutUsSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list all the about us created objects
+        """
         queryset = AboutUs.objects.all().order_by('id')
         serializer = AboutUsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -172,6 +230,10 @@ class ContactInfoViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create social media object including:
+            facebook, instagram and youtube
+        """
         serializer = ContactInfoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -181,6 +243,10 @@ class ContactInfoViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update social media object including:
+            facebook, instagram and youtube
+        """
         instance = self.get_object()
         serializer = ContactInfoSerializer(instance, data=request.data)
         if serializer.is_valid():
@@ -191,11 +257,18 @@ class ContactInfoViewSet(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get social media object by id of:
+            facebook, instagram and youtube
+        """
         instance = self.get_object()
         serializer = ContactInfoSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list social media objects
+        """
         queryset = ContactInfo.objects.all().order_by('id')
         serializer = ContactInfoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -208,11 +281,17 @@ class CompilerViewSet(ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def list(self, request, *args, **kwargs):
+        """
+            this is used for listing all the python codes.....
+        """
         queryset = PythonCode.objects.all().order_by('id')
         serializer = CompilerSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def execute_code(self, request, *args, **kwargs):
+        """
+            This endpoint will handle execution of the code...
+        """
         instance = self.get_object()
         my_code = instance.my_code
         if "," in my_code:
