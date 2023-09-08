@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (
     IntroductionViewSet, PartViewSet,
     AboutUsViewSet, ContactInfoViewSet,
-    CompilerViewSet, SubPartViewSet
+    CompilerViewSet, SubPartViewSet,
+    ContactUsViewSet
 )
 
 urlpatterns = [
@@ -35,4 +36,9 @@ urlpatterns = [
     # compiler urls
     path('execute_code/<int:pk>', CompilerViewSet.as_view({'get': 'execute_code'})),
     path('list_codes', CompilerViewSet.as_view({'get': 'list'})),
+    # address of contact us urls
+    path('create_contact_us', ContactUsViewSet.as_view({'post': 'create'})),
+    path('update_contact_us/<int:pk>', ContactUsViewSet.as_view({'put': 'update'})),
+    path('get_contact_us/<int:pk>', ContactUsViewSet.as_view({'get': 'retrieve'})),
+    path('list_contact_us', ContactUsViewSet.as_view({'get': 'list'})),
 ]

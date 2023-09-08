@@ -53,3 +53,23 @@ class PythonCode(models.Model):
 
     def __str__(self):
         return self.my_code
+
+
+# used for holding objects of contact us page
+class ContactUs(models.Model):
+    """This class will handle objects of contact us page"""
+    # below fields used for Address column on contact us
+    address_title = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100)
+    state = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100)
+    street = models.CharField(max_length=100, blank=True)
+    postal_code = models.IntegerField(blank=True)
+    # below 2 fields used for Phone Information
+    phone_title = models.CharField(max_length=100, blank=True)
+    phone_no = models.CharField(max_length=100)
+    # these 2 fields will be used for Email Information on contact us page
+    email_title = models.CharField(max_length=100, blank=True)
+    email = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

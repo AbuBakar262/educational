@@ -7,11 +7,12 @@ import shapely.geometry
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode, ContactUs
 from .serializers import (
     PartSerializer, IntroductionSerializer,
     AboutUsSerializer, ContactInfoSerializer,
-    CompilerSerializer, SubPartSerializer
+    CompilerSerializer, SubPartSerializer,
+    ContactUsSerializer
 )
 
 
@@ -292,34 +293,107 @@ class CompilerViewSet(ModelViewSet):
         """
             This endpoint will handle execution of the code...
         """
+        # instance = self.get_object()
+        # my_code = instance.my_code
+        # if "', p" in my_code or '", p' in my_code:
+        #     list_code = my_code.split(",")
+        #     output_list = []
+        #     for code in list_code:
+        #         original_stdout = sys.stdout
+        #         sys.stdout = io.StringIO()
+        #         try:
+        #             exec(code)
+        #             output = sys.stdout.getvalue()
+        #         except Exception as e:
+        #             output = str(e)
+        #         finally:
+        #             sys.stdout = original_stdout
+        #         output_list.append(output)
+        #     list_code.clear()
+        #     for o in output_list:
+        #         list_code.append(o.replace("\n", ""))
+        #     return Response({'output': list_code}, status=status.HTTP_200_OK)
+        # original_stdout = sys.stdout
+        # sys.stdout = io.StringIO()
+        # try:
+        #     exec(my_code)
+        #     output = sys.stdout.getvalue()
+        # except Exception as e:
+        #     output = str(e)
+        # finally:
+        #     sys.stdout = original_stdout
+        # return Response({'output': output.replace("\n", "")}, status=status.HTTP_200_OK)
         instance = self.get_object()
         my_code = instance.my_code
-        if "," in my_code:
-            list_code = my_code.split(",")
-            output_list = []
-            for code in list_code:
-                original_stdout = sys.stdout
-                sys.stdout = io.StringIO()
-                try:
-                    exec(code)
-                    output = sys.stdout.getvalue()
-                except Exception as e:
-                    output = str(e)
-                finally:
-                    sys.stdout = original_stdout
-                output_list.append(output)
-            list_code.clear()
-            for o in output_list:
-                list_code.append(o.replace("\n", ""))
-            return Response({'output': list_code}, status=status.HTTP_200_OK)
-        original_stdout = sys.stdout
-        sys.stdout = io.StringIO()
-        try:
-            exec(my_code)
-            output = sys.stdout.getvalue()
-        except Exception as e:
-            output = str(e)
-        finally:
-            sys.stdout = original_stdout
+        output_list = []
 
-        return Response({'output': output.replace("\n", "")}, status=status.HTTP_200_OK)
+        def execute_single_code(code):
+            original_stdout = sys.stdout
+            sys.stdout = io.StringIO()
+            try:
+                exec(code)
+                output = sys.stdout.getvalue()
+            except Exception as e:
+                output = str(e)
+            finally:
+                sys.stdout = original_stdout
+            return output.encode().decode('unicode_escape')
+
+        if my_code.strip():
+            if my_code.count("print") > 1 and "," in my_code:
+                    list_code = my_code.split(",")
+                    for code in list_code:
+                        output_list.append(execute_single_code(code))
+            else:
+                output_list.append(execute_single_code(my_code))
+        else:
+            output_list.append(execute_single_code(my_code))
+        return Response({'output': ''.join(output_list).encode().decode('unicode_escape')}, status=status.HTTP_200_OK)
+
+
+class ContactUsViewSet(ModelViewSet):
+    """This class is used for managing endpoints for Address on contact us page"""
+    queryset = ContactUs.objects.all()
+    serializer_class = ContactUsSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create address of contact us object
+        """
+        serializer = ContactUsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        """
+            this endpoint will update address of contact us object
+        """
+        instance = self.get_object()
+        serializer = ContactUsSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+            this endpoint will get address of contact us object by id
+        """
+        instance = self.get_object()
+        serializer = ContactUsSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def list(self, request, *args, **kwargs):
+        """
+            this endpoint will list address of contact us objects
+        """
+        queryset = ContactUs.objects.all().order_by('id')
+        serializer = ContactUsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

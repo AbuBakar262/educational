@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode
+from .models import Part, SubPart, Introduction, AboutUs, ContactInfo, PythonCode, ContactUs
 
 
 class PartSerializer(serializers.ModelSerializer):
@@ -51,4 +51,10 @@ class ContactInfoSerializer(serializers.ModelSerializer):
 class CompilerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PythonCode
+        fields = '__all__'
+
+
+class ContactUsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactUs
         fields = '__all__'
