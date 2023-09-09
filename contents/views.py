@@ -337,18 +337,20 @@ class CompilerViewSet(ModelViewSet):
                 output = str(e)
             finally:
                 sys.stdout = original_stdout
+            if "\n" in output:
+                return output.split("\n")
             return output.encode().decode('unicode_escape')
 
         if my_code.strip():
             if my_code.count("print") > 1 and "," in my_code:
-                    list_code = my_code.split(",")
-                    for code in list_code:
-                        output_list.append(execute_single_code(code))
+                list_code = my_code.split(",")
+                for code in list_code:
+                    output_list.append(execute_single_code(code))
             else:
                 output_list.append(execute_single_code(my_code))
         else:
             output_list.append(execute_single_code(my_code))
-        return Response({'output': ''.join(output_list).encode().decode('unicode_escape')}, status=status.HTTP_200_OK)
+        return Response({'output': output_list}, status=status.HTTP_200_OK)
 
 
 class ContactUsViewSet(ModelViewSet):
