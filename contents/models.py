@@ -50,6 +50,8 @@ class ContactInfo(models.Model):
 class PythonCode(models.Model):
     my_code = models.TextField()
     sub_part = models.ForeignKey(SubPart, on_delete=models.CASCADE)
+    image_as_output = models.BooleanField(blank=True, default=False)
+    output_image = models.FileField(blank=True)
 
     def __str__(self):
         return self.my_code

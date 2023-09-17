@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib
 import geopandas as gpd
 import shapely.geometry
+import contextily as ctx
+import IPython
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -171,7 +173,7 @@ class SubPartViewSet(ModelViewSet):
             in the query params
         """
         part_id = self.request.query_params.get("part_id")
-        sub_parts = SubPart.objects.filter(part_id=part_id)
+        sub_parts = SubPart.objects.filter(part_id=part_id).order_by('id')
         serializer = SubPartSerializer(sub_parts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -240,7 +242,6 @@ class ContactInfoViewSet(ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
@@ -280,6 +281,17 @@ class CompilerViewSet(ModelViewSet):
     queryset = PythonCode.objects.all()
     serializer_class = CompilerSerializer
     permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        """
+            this endpoint will create python codes
+        """
+        serializer = CompilerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
         """
@@ -323,11 +335,40 @@ class CompilerViewSet(ModelViewSet):
         # finally:
         #     sys.stdout = original_stdout
         # return Response({'output': output.replace("\n", "")}, status=status.HTTP_200_OK)
+        # instance = self.get_object()
+        # my_code = instance.my_code
+        #
+        # def execute_single_code(code):
+        #     original_stdout = sys.stdout
+        #     sys.stdout = io.StringIO()
+        #     try:
+        #         exec(code)
+        #         output = sys.stdout.getvalue()
+        #     except Exception as e:
+        #         output = str(e)
+        #     finally:
+        #         sys.stdout = original_stdout
+        #     if "\n" in output:
+        #         return output.split("\n")
+        #     return output.encode().decode('unicode_escape')
+        #
+        # if my_code.strip():
+        #     if my_code.count("print") > 1 and "\r\n" in my_code:
+        #         list_code = my_code.split("\r\n")
+        #         for code in list_code:
+        #             output = execute_single_code(code)
+        #     else:
+        #         output = execute_single_code(my_code)
+        # else:
+        #     output = execute_single_code(my_code)
+        # if instance.image_as_output is True:
+        #     url = instance.output_image.url
+        #     return Response({'output': output, "url": url}, status=status.HTTP_200_OK)
+        # return Response({'output': output}, status=status.HTTP_200_OK)
         instance = self.get_object()
         my_code = instance.my_code
-        output_list = []
 
-        def execute_single_code(code):
+        def execute_code(code):
             original_stdout = sys.stdout
             sys.stdout = io.StringIO()
             try:
@@ -337,20 +378,17 @@ class CompilerViewSet(ModelViewSet):
                 output = str(e)
             finally:
                 sys.stdout = original_stdout
-            if "\n" in output:
-                return output.split("\n")
-            return output.encode().decode('unicode_escape')
+            return output.splitlines()
 
         if my_code.strip():
-            if my_code.count("print") > 1 and "," in my_code:
-                list_code = my_code.split(",")
-                for code in list_code:
-                    output_list.append(execute_single_code(code))
-            else:
-                output_list.append(execute_single_code(my_code))
+            output = execute_code(my_code)
         else:
-            output_list.append(execute_single_code(my_code))
-        return Response({'output': output_list}, status=status.HTTP_200_OK)
+            output = execute_code(my_code)
+
+        if instance.image_as_output is True:
+            url = instance.output_image.url
+            return Response({'output': output, "url": url}, status=status.HTTP_200_OK)
+        return Response({'output': output}, status=status.HTTP_200_OK)
 
 
 class ContactUsViewSet(ModelViewSet):

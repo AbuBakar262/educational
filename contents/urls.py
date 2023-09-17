@@ -36,6 +36,7 @@ urlpatterns = [
     # compiler urls
     path('execute_code/<int:pk>', CompilerViewSet.as_view({'get': 'execute_code'})),
     path('list_codes', CompilerViewSet.as_view({'get': 'list'})),
+    path('create_codes', CompilerViewSet.as_view({'post': 'create'})),
     # address of contact us urls
     path('create_contact_us', ContactUsViewSet.as_view({'post': 'create'})),
     path('update_contact_us/<int:pk>', ContactUsViewSet.as_view({'put': 'update'})),
